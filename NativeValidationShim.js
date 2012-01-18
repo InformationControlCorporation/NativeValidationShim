@@ -7,6 +7,15 @@
 	
 	//Create all of the validation rules.
 	
+	//Helper functions
+	function createMessage(element, message) {
+	
+	}
+	
+	function removeMessage(element) {
+	
+	}
+	
 	//Cache any pre-existing load event.
 	var old_load = document.onload || function() {};
 	
@@ -25,7 +34,14 @@
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
 					
-					
+					switch (element.type) {
+						case "hidden":
+						case "submit":
+							break; //Don't validate these.
+						case "text":
+						default: //Treat unrecognized types as text fields
+							
+					}
 				}
 			
 				//Run the old callback after all is clear.
