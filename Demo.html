@@ -2,8 +2,23 @@
 <html lang="en">
 	<head>
 		<title>HTML 5 Native Validation Shim Demo and Test</title>
+		<script src="http://www.modernizr.com/downloads/modernizr-latest.js"></script>
 		<script src="NativeValidationShim.js"></script>
 	</head>
 	<body>
+		<form action="#" method="post">
+			<table>
+				<tbody>
+					<tr>
+						<td>Required Test</td>
+						<td><input type="text" required /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="Submit" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
 	</body>
 </html>
