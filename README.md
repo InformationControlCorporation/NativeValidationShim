@@ -15,7 +15,8 @@ can be used on old browsers.
 **Usage**
 
 Just include the NativeValiationShim.js file in your head and start using the
-new form types.  It's as easy as that.
+new form types.  It's as easy as that.  The library currently depends on
+Modernizr, so you'll have to include that before including this library.
 
 **Change Log**
 
