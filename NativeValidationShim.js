@@ -8,15 +8,15 @@
 			required:  "This is a required field"
 		}
 	};
-	
 	//Create all of the validation rules.
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
 	function validateRequired(element) {
-		if (!Modernizr.input.required && element.required && (typeof(element.value) == "undefined" || element.value.length == 0)) {
+		if(element.value.length <= 0){
 			return lib.settings.messages.required;
+		} else {
+			return "";
 		}
-		else return "";
 	}
 	
 	//Helper functions
@@ -29,26 +29,23 @@
 	}
 	
 	//Cache any pre-existing load event.
-	var old_load = document.onload || function() {};
+	var old_load = window.onload || function() {};
 	
 	//Wait until the page has finished loading to attach to all page forms.
-	document.onload = function() {
+	window.onload = function() {
 		//Attach to every form on the page.
 		for (var i = 0; i < document.forms.length; i++) {
 			var form = document.forms[i];
-			
 			//Cache old callback.
 			var old_submit = form.onsubmit || function() {};
 			
 			//Set our new one.
 			form.onsubmit = function() {
-				var preventSubmit = false;
-			
+				var allowSubmit = true;
+				var message = "";
 				//Test all elements on the form.
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
-					var message = "";
-					
 					switch (element.type) {
 						case "hidden":
 						case "submit":
@@ -57,19 +54,18 @@
 						default: //Treat unrecognized types as text fields
 							
 					}
-					
-					if (message == "") message = validateRequired(element);
+					if(element.getAttribute('required') != null) {
+						if (message == "") message = validateRequired(element);
+						element.value=message;
+					}
 				}
-			
 				if (message != "") {
-					preventSubmit = true;
-				}
-				else {
-					//Run the old callback after all is clear.
+					allowSubmit = false;
+				} else {
 					old_submit();
 				}
-				
-				return preventSubmit;
+				//return preventSubmit;
+				return allowSubmit;
 			};
 		}
 		
