@@ -10,6 +10,10 @@
 	};
 	//Create all of the validation rules.
 	
+	function validateText(element) {
+		//The pattern property should probably be done in here.
+	}
+	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
 	function validateRequired(element) {
 		if(element.value.length <= 0){
@@ -42,28 +46,37 @@
 			//Set our new one.
 			form.onsubmit = function() {
 				var allowSubmit = true;
-				var message = "";
+				
 				//Test all elements on the form.
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
+					var message = "";
+					
+					//Required first
+					if (element.getAttribute('required') != null) {
+						if (message == "") message = validateRequired(element);
+						element.value=message;
+					}
+					
+					//Then element-specific types
 					switch (element.type) {
 						case "hidden":
 						case "submit":
 							break; //Don't validate these.
 						case "text":
 						default: //Treat unrecognized types as text fields
-							
+							if (message == "") message = validateText(element);
 					}
-					if(element.getAttribute('required') != null) {
-						if (message == "") message = validateRequired(element);
-						element.value=message;
+					
+					if (message == "")  removeMessage(element);
+					else {
+						allowSubmit = false;
+						createMessage(element, message);
 					}
 				}
-				if (message != "") {
-					allowSubmit = false;
-				} else {
-					old_submit();
-				}
+				
+				if (allowSubmit) old_submit();
+				
 				//return preventSubmit;
 				return allowSubmit;
 			};
