@@ -13,6 +13,7 @@
 	
 	function validateText(element) {
 		//The pattern property should probably be done in here.
+		return '';
 	}
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
