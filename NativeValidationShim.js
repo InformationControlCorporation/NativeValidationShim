@@ -5,6 +5,7 @@
 	lib.version = '0.0';
 	lib.settings = {
 		messages: {
+			pattern: "Invalid input",
 			required:  "This is a required field"
 		},
 		error_class: 'validation_error'
@@ -12,8 +13,16 @@
 	//Create all of the validation rules.
 	
 	function validateText(element) {
-		//The pattern property should probably be done in here.
-		return '';
+		var message = ""; 
+		
+		message = validatePattern(element);
+		if (message != '') return message;
+		
+		return "";
+	}
+	
+	function validatePattern(element) {
+		return "";
 	}
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
