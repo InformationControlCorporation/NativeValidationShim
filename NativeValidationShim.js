@@ -18,11 +18,13 @@
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
 	function validateRequired(element) {
-		if(element.value.length <= 0){
-			return lib.settings.messages.required;
-		} else {
-			return "";
+		if (element.tagName == 'input' || element.tagName == 'textarea') { //For input element types.  Other types, e.g. select,  need to be handled separately, if at all.
+			if(element.value.length <= 0){
+				return lib.settings.messages.required;
+			}
 		}
+		
+		return "";
 	}
 	
 	//Helper functions
