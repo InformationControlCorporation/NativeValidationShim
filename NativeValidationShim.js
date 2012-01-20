@@ -6,7 +6,8 @@
 	lib.settings = {
 		messages: {
 			required:  "This is a required field"
-		}
+		},
+		error_class: 'validation_error'
 	};
 	//Create all of the validation rules.
 	
@@ -25,11 +26,47 @@
 	
 	//Helper functions
 	function createMessage(element, message) {
-	
+		var span_element = document.createElement('span');
+		span_element.appendChild(document.createTextNode(message));
+		addClass(span_element, lib.settings.error_class);
+		
+		if (element.nextSibling == null || !hasClass(element.nextSibling, lib.settings.error_class)) {
+			if (element.nextSibling != null) {
+				element.parentNode.insertBefore(span_element, element.nextSibling);
+			}
+			else {
+				element.parentNode.appendChild(span_element);
+			}
+		}
 	}
 	
 	function removeMessage(element) {
+		//Abort if there isn't a next sibling
+		if (element.nextSibling == null) {
+			return;
+		}
+		
+		//Only remove the element if it has our validation error class
+		if (hasClass(element.nextSibling, lib.settings.error_class)) {
+			element.parentNode.removeChild(element.nextSibling);
+		}
+	}
 	
+	function addClass(element, class_name) {
+		element.className += ' '+class_name+' ';
+	}
+	
+	function hasClass(element, class_name) {
+		if ((" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" "+lib.settings.error_class+" ") > -1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function removeClass(element, class_name) {
+		element.className = element.className.replace(new RegExp('(?:^|\s)'+class_name+'(?!\S)', ''));
 	}
 	
 	//Cache any pre-existing load event.
@@ -55,7 +92,6 @@
 					//Required first
 					if (element.getAttribute('required') != null) {
 						if (message == "") message = validateRequired(element);
-						element.value=message;
 					}
 					
 					//Then element-specific types
