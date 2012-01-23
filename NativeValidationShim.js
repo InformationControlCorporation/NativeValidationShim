@@ -5,18 +5,41 @@
 	lib.version = '0.0';
 	lib.settings = {
 		messages: {
+			maximum: "The number is too high",
+			minimum: "The number is too low",
+			numeric: "The input must be a number",
 			pattern: "Invalid input",
-			required:  "This is a required field"
+			required:  "This is a required field",
+			step: "Must be divisible by the step size"
 		},
 		error_class: 'validation_error'
 	};
 	
-	//Create all of the validation rules.
+	/*
+	 * Create all of the validation rules.
+	 */
+	 
 	function validateNumber(element) {
 		var message = "";
 	
 		if (message == "") {
 			message = validateRequired(element);
+		}
+	
+		if (message == "") {
+			message = validateNumeric(element);
+		}
+	
+		if (message == "") {
+			message = validateMin(element);
+		}
+	
+		if (message == "") {
+			message = validateMax(element);
+		}
+	
+		if (message == "") {
+			message = validateStep(element);
 		}
 	
 		return message;
@@ -36,6 +59,34 @@
 		return message;
 	}
 	
+	/*
+	 * Create all of the helper validations, for validation logic shared between element types
+	 */
+	 
+	function validateMax(element) {
+		if (element.getAttribute('max') != null && element.value > element.getAttribute('max')) {
+			return lib.settings.messages.max;
+		}
+		
+		return "";
+	}
+	
+	function validateMin(element) {
+		if (element.getAttribute('min') != null && element.value < element.getAttribute('min')) {
+			return lib.settings.messages.min;
+		}
+		
+		return "";
+	}
+	
+	function validateNumeric(element) {
+		if (element.value != parseFloat(element.value)) {
+			return lib.settings.messages.numeric;
+		}
+	
+		return "";
+	}
+	
 	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
 	function validatePattern(element) {
 		if (element.getAttribute('pattern') != null) {
@@ -51,14 +102,24 @@
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
 	function validateRequired(element) {
-		if(element.getAttribute('required') != null && element.value.length <= 0) {
+		if (element.getAttribute('required') != null && element.value.length <= 0) {
 			return lib.settings.messages.required;
 		}
 		
 		return "";
 	}
 	
-	//Helper functions
+	function validateStep(element) {
+		if (element.getAttribute('step') != null && element.getAttribute('step') > 0 && element.value % element.getAttribute('step') > 0) {
+			return lib.settings.messages.step;
+		}
+	
+		return "";
+	}
+	
+	/*
+	 * General Helper functions
+	 */
 	function createMessage(element, message) {
 		var span_element = document.createElement('span');
 		span_element.appendChild(document.createTextNode(message));
@@ -103,6 +164,10 @@
 		element.className = element.className.replace(new RegExp('(?:^|\s)'+class_name+'(?!\S)', ''));
 	}
 	
+	/*
+	 * Loop through and set up the validations on the form.
+	 */
+	
 	//Cache any pre-existing load event.
 	var old_load = window.onload || function() {};
 	
@@ -130,6 +195,8 @@
 							break; //Don't validate these.
 						case "number":
 							if (message == "") message = validateNumber(element);
+							break;
+						case "search":
 						case "text":
 						default: //Treat unrecognized types as text fields
 							if (message == "") message = validateText(element);
