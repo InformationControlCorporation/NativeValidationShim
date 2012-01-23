@@ -14,7 +14,7 @@
 			step: "Must be divisible by the step size"
 		},
 		regex: {
-			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i //A # followed by 3 or 6 hexadecimal characters
+			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i, //A # followed by 3 or 6 hexadecimal characters
 		},
 		error_class: 'validation_error'
 	};
@@ -22,7 +22,7 @@
 	/*
 	 * Create all of the validation rules.
 	 */
-	 
+	
 	function validateColor(element) {
 		var message = "";
 	
@@ -246,6 +246,7 @@
 							message = validateNumber(element);
 							break;
 						case "search":
+						case "tel": //No specified pattern, just semantic
 						case "text":
 						default: //Treat unrecognized types as text fields
 							message = validateText(element);
