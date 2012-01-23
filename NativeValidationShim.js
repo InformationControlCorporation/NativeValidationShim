@@ -15,25 +15,35 @@
 	function validateNumber(element) {
 		var message = "";
 	
-		
+		if (message == "") {
+			message = validateRequired(element);
+		}
 	
 		return message;
 	}
 	
 	function validateText(element) {
 		var message = "";
+	
+		if (message == "") {
+			message = validateRequired(element);
+		}
 		
-		message = validatePattern(element);
+		if (message == "") {
+			message = validatePattern(element);
+		}
 		
 		return message;
 	}
 	
 	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
 	function validatePattern(element) {
-		var regex = new Regexp(element.pattern);
-	
-		if (!regex.test(element.value)) {
-			return lib.settings.messages.pattern;
+		if (element.getAttribute('pattern') != null) {
+			var regex = new Regexp(element.pattern);
+		
+			if (!regex.test(element.value)) {
+				return lib.settings.messages.pattern;
+			}
 		}
 	
 		return "";
@@ -41,10 +51,8 @@
 	
 	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
 	function validateRequired(element) {
-		if (element.tagName == 'input' || element.tagName == 'textarea') { //For input element types.  Other types, e.g. select,  need to be handled separately, if at all.
-			if(element.value.length <= 0){
-				return lib.settings.messages.required;
-			}
+		if(element.getAttribute('required') != null && element.value.length <= 0) {
+			return lib.settings.messages.required;
 		}
 		
 		return "";
@@ -114,11 +122,6 @@
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
 					var message = "";
-					
-					//Required first
-					if (element.getAttribute('required') != null) {
-						if (message == "") message = validateRequired(element);
-					}
 					
 					//Then element-specific types
 					switch (element.type) {
