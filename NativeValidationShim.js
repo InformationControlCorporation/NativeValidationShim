@@ -5,6 +5,7 @@
 	lib.version = '0.0';
 	lib.settings = {
 		messages: {
+			color: "The value must be a valid hexadecimal color code.",
 			maximum: "The number is too high",
 			minimum: "The number is too low",
 			numeric: "The input must be a number",
@@ -18,6 +19,22 @@
 	/*
 	 * Create all of the validation rules.
 	 */
+	 
+	function validateColor(element) {
+		var message = "";
+	
+		if (message == "") {
+			message = validateRequired(element);
+		}
+	
+		if (message == "") {
+			if (element.value.length > 0 && !element.value.match(new Regexp(lib.settings.regex.color))) {
+				message = lib.settings.messages.color;
+			}
+		}
+		
+		return message;
+	}
 	 
 	function validateNumber(element) {
 		var message = "";
@@ -218,6 +235,9 @@
 						case "hidden":
 						case "submit":
 							break; //Don't validate these.
+						case "color":
+							message = validateColor(element);
+							break;
 						case "number":
 						case "range":
 							message = validateNumber(element);
