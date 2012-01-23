@@ -12,13 +12,20 @@
 	};
 	
 	//Create all of the validation rules.
+	function validateNumber(element) {
+		var message = "";
+	
+		
+	
+		return message;
+	}
+	
 	function validateText(element) {
-		var message = ""; 
+		var message = "";
 		
 		message = validatePattern(element);
-		if (message != '') return message;
 		
-		return "";
+		return message;
 	}
 	
 	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
@@ -118,6 +125,8 @@
 						case "hidden":
 						case "submit":
 							break; //Don't validate these.
+						case "number":
+							if (message == "") message = validateNumber(element);
 						case "text":
 						default: //Treat unrecognized types as text fields
 							if (message == "") message = validateText(element);
