@@ -13,6 +13,9 @@
 			required:  "This is a required field",
 			step: "Must be divisible by the step size"
 		},
+		regex: {
+			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i //A # followed by 3 or 6 hexadecimal characters
+		},
 		error_class: 'validation_error'
 	};
 	
@@ -28,7 +31,7 @@
 		}
 	
 		if (message == "") {
-			if (element.value.length > 0 && !element.value.match(new Regexp(lib.settings.regex.color))) {
+			if (element.value.length > 0 && !element.value.match(lib.settings.regex.color)) {
 				message = lib.settings.messages.color;
 			}
 		}
@@ -127,7 +130,7 @@
 		}
 		
 		if (element.getAttribute('pattern') != null) {
-			var regex = new Regexp(element.pattern);
+			var regex = new RegExp(element.pattern);
 		
 			if (!regex.test(element.value)) {
 				return lib.settings.messages.pattern;
