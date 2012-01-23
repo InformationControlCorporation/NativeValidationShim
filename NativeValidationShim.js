@@ -10,8 +10,8 @@
 		},
 		error_class: 'validation_error'
 	};
-	//Create all of the validation rules.
 	
+	//Create all of the validation rules.
 	function validateText(element) {
 		var message = ""; 
 		
@@ -21,7 +21,14 @@
 		return "";
 	}
 	
+	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
 	function validatePattern(element) {
+		var regex = new Regexp(element.pattern);
+	
+		if (!regex.test(element.value)) {
+			return lib.settings.messages.pattern;
+		}
+	
 		return "";
 	}
 	
