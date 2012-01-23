@@ -64,22 +64,37 @@
 	 */
 	 
 	function validateMax(element) {
-		if (element.getAttribute('max') != null && element.value > element.getAttribute('max')) {
-			return lib.settings.messages.max;
+		if (element.value == "") {
+			//Don't validate empty strings.  This is for "required" to determine.
+			return "";
+		}
+		
+		if (element.getAttribute('max') != null && element.value > parseFloat(element.getAttribute('max'))) {
+			return lib.settings.messages.maximum;
 		}
 		
 		return "";
 	}
 	
 	function validateMin(element) {
-		if (element.getAttribute('min') != null && element.value < element.getAttribute('min')) {
-			return lib.settings.messages.min;
+		if (element.value == "") {
+			//Don't validate empty strings.  This is for "required" to determine.
+			return "";
+		}
+		
+		if (element.getAttribute('min') != null && element.value < parseFloat(element.getAttribute('min'))) {
+			return lib.settings.messages.minimum;
 		}
 		
 		return "";
 	}
 	
 	function validateNumeric(element) {
+		if (element.value == "") {
+			//Don't validate empty strings.  This is for "required" to determine.
+			return "";
+		}
+	
 		if (element.value != parseFloat(element.value)) {
 			return lib.settings.messages.numeric;
 		}
@@ -89,6 +104,11 @@
 	
 	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
 	function validatePattern(element) {
+		if (element.value == "") {
+			//Don't validate empty strings.  This is for "required" to determine.
+			return "";
+		}
+		
 		if (element.getAttribute('pattern') != null) {
 			var regex = new Regexp(element.pattern);
 		
@@ -110,7 +130,12 @@
 	}
 	
 	function validateStep(element) {
-		if (element.getAttribute('step') != null && element.getAttribute('step') > 0 && element.value % element.getAttribute('step') > 0) {
+		if (element.value == "") {
+			//Don't validate empty strings.  This is for "required" to determine.
+			return "";
+		}
+		
+		if (element.getAttribute('step') != null && element.getAttribute('step') > 0 && element.value % parseFloat(element.getAttribute('step')) != 0) {
 			return lib.settings.messages.step;
 		}
 	
@@ -189,27 +214,31 @@
 					var message = "";
 					
 					//Then element-specific types
-					switch (element.type) {
+					switch (element.getAttribute('type')) {
 						case "hidden":
 						case "submit":
 							break; //Don't validate these.
 						case "number":
-							if (message == "") message = validateNumber(element);
+						case "range":
+							message = validateNumber(element);
 							break;
 						case "search":
 						case "text":
 						default: //Treat unrecognized types as text fields
-							if (message == "") message = validateText(element);
+							message = validateText(element);
 					}
 					
-					if (message == "")  removeMessage(element);
-					else {
+					removeMessage(element);
+					
+					if (message != "") {
 						allowSubmit = false;
 						createMessage(element, message);
 					}
 				}
 				
-				if (allowSubmit) old_submit();
+				if (allowSubmit) {
+					old_submit();
+				}
 				
 				//return preventSubmit;
 				return allowSubmit;
