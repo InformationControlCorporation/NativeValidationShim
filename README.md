@@ -20,6 +20,9 @@ the HTML 5 specification, no more, no less.
 Just include the NativeValiationShim.js file in your head and start using the
 new form types.  It's as easy as that.  The library currently depends on
 Modernizr, so you'll have to include that before including this library.
+Validation errors are created in the DOM as span elements with the
+"validation_error" class applied. An example stylesheet is included to
+show a likely method of styling the errors.
 
 **Change Log**
 
