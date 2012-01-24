@@ -1,24 +1,27 @@
 (function(root, undefined) {
 	//Set-up settings and other variables.
 	var lib = {};
-	
 	lib.version = '0.0';
 	lib.settings = {
 		messages: {
 			color: "The value must be a valid hexadecimal color code",
 			email: "The value must be a valid email address",
 			emailMulti: "The value must be a list of one or more valid email addresses",
-			maximum: "The number is too high",
+			maximum: "The number cannot be higher than",
 			month: "Must be a valid month",
-			minimum: "The number is too low",
+			minimum: "The number cannot be lower than",
 			numeric: "The input must be a number",
 			pattern: "Invalid input",
 			required:  "This is a required field",
 			step: "Must be divisible by the step size",
 			url: "Must be a valid url",
 			week: "Must be a valid week"
-		},
-		regex: {
+		},regex: {
+			numeric: /^([-]?[0-9]+(\.?[0-9]*)?([eE]?[\+-]?[0-9]*)?)$/,
+			date: null,
+			datetime: null,
+			datetimelocal:null,
+			time: null,
 			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i, //A # followed by 3 or 6 hexadecimal characters
 			email: /^[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			emailMulti: /^(([a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*), )*[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -28,229 +31,257 @@
 		},
 		error_class: 'validation_error'
 	};
-	
+	lib.supported = {
+		types : {
+			text : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'pattern']
+			},
+			search : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'pattern']
+			},
+			url : {
+				regex : lib.settings.regex.url,
+				message: lib.settings.messages.url,
+				validationAttributes : ['required', 'pattern']
+			},
+			tel : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'pattern']
+			},
+			email : {
+				regex : lib.settings.regex.email,
+				message: lib.settings.messages.email,
+				validationAttributes : ['required', 'pattern', 'multiple']
+			},
+			password : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'pattern']
+			},
+			date : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			datetime : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			datetimelocal : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			month : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			week : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			time : {
+				regex : null,
+				message: '',
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			number : {
+				regex: lib.settings.regex.numeric,
+				message: lib.settings.messages.numeric,
+				validationAttributes : ['required', 'max', 'min', 'step']
+			},
+			range : {
+				regex: lib.settings.regex.numeric,
+				message: lib.settings.messages.numeric,
+				validationAttributes : ['max', 'min', 'step']
+			},
+			checkbox : {
+				regex: null,
+				message: '',
+				validationAttributes : ['required']
+			},
+			radio : {
+				regex: null,
+				message: '',
+				validationAttributes : ['required']
+			},
+			color : {
+				regex: lib.settings.regex.color,
+				message: lib.settings.messages.color,
+				validationAttributes : []
+			},
+			file : {
+				regex: null,
+				message: '',
+				validationAttributes : ['required']
+			},
+			hidden : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			submit : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			image : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			button : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			reset : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			select : {
+				regex: null,
+				message: '',
+				validationAttributes : []
+			},
+			textarea : {
+				regex: null,
+				message: '',
+				validationAttributes : ['required', 'maxlength']
+			}
+		},
+		attributes : {
+			required : {
+				message: lib.settings.messages.required,
+				validationFunction : validateRequired
+			},
+			pattern : {
+				message: lib.settings.messages.pattern,
+				validationFunction : validatePattern
+			},
+			max : {
+				message: lib.settings.messages.maximum,
+				validationFunction : validateMax
+			},
+			min : {
+				message: lib.settings.messages.minimum,
+				validationFunction : validateMin
+			},
+			step : {
+				message: lib.settings.messages.step,
+				validationFunction : validateStep
+			},
+			multiple : {
+				message: "",
+				validationFunction : null
+			},
+			maxlength : {
+				message: "",
+				validationFunction : null
+			}
+		}
+	}
+
 	/*
-	 * Create all of the validation rules.
+	 * Validates every element in a form
 	 */
-	
-	function validateColor(element) {
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-	
-		if (message == "") {
-			if (element.value.length > 0 && !element.value.match(lib.settings.regex.color)) {
-				message = lib.settings.messages.color;
-			}
-		}
-		
-		return message;
-	}
-	
-	function validateEmail(element) {
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-		
-		if (message == "") {
-			message = validatePattern(element);
-		}
-	
-		if (message == "") {
-			if (element.getAttribute('multiple') != null) {
-				if (element.value.length > 0 && !element.value.match(lib.settings.regex.emailMulti)) {
-					message = lib.settings.messages.emailMulti;
-				}
-			}
-			else {
-				if (element.value.length > 0 && !element.value.match(lib.settings.regex.email)) {
-					message = lib.settings.messages.email;
-				}
-			}
-		}
-		
-		return message;
-	}
-	
-	function validateMonth(element) {
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-	
-		if (message == "") {
-			if (element.value.length > 0 && !element.value.match(lib.settings.regex.month)) {
-				message = lib.settings.messages.month;
-			}
-		}
-		
-		return message;
-	}
 	 
-	function validateNumber(element) {
+	 function validateElement(element) {
 		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
+		var nvTag = element.tagName.toLowerCase();
+		var nvType = element.getAttribute("type").replace(/-/, "");
+		if(nvTag != 'input') {
+			if(lib.supported.types[nvTag]){
+				nvType = nvTag;
+			} else {
+				return message;
+			}
+		} else if(!lib.supported.types[nvType]) {
+			nvType = "text";
 		}
-	
-		if (message == "") {
-			message = validateNumeric(element);
-		}
-	
-		if (message == "") {
-			message = validateMin(element);
-		}
-	
-		if (message == "") {
-			message = validateMax(element);
-		}
-	
-		if (message == "") {
-			message = validateStep(element);
-		}
-	
-		return message;
-	}
-	
-	function validateText(element) {
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-		
-		if (message == "") {
-			message = validatePattern(element);
-		}
-		
-		return message;
-	}
-	
-	function validateUrl(element) {
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-		
-		if (message == "") {
-			message = validatePattern(element);
-		}
-	
-		if (message == "") {
-			if (element.value.length > 0 && !element.value.match(lib.settings.regex.url)) {
-				message = lib.settings.messages.url;
+		var nvPath = lib.supported.types[nvType];
+		var nvRegex = nvPath.regex;
+		if(nvRegex != null && element.value.length != "") {
+			if(!nvRegex.test(element.value)){
+				message = nvPath.message;
 			}
 		}
-		
-		return message;
-	}
-	
-	function validateWeek(element){
-		var message = "";
-	
-		if (message == "") {
-			message = validateRequired(element);
-		}
-	
-		if (message == "") {
-			if (element.value.length > 0 && !element.value.match(lib.settings.regex.week)) {
-				message = lib.settings.messages.week;
+		if(message == "") {
+			var nvAttr = nvPath.validationAttributes;
+			if(nvAttr.length > 0) {
+				for(i=0; i < nvAttr.length; i++) {
+					if(message == "") {
+						if(element.getAttribute(nvAttr[i]) != null && lib.supported.attributes[nvAttr[i]].validationFunction != null) {
+							message = lib.supported.attributes[nvAttr[i]].validationFunction(element);
+						}
+					}
+				}
 			}
 		}
-		
 		return message;
 	}
+	
+	
 	
 	/*
 	 * Create all of the helper validations, for validation logic shared between element types
 	 */
 	 
-	function validateMax(element) {
-		if (element.value == "") {
-			//Don't validate empty strings.  This is for "required" to determine.
-			return "";
+	function validateRequired(element) {
+		if (element.getAttribute('required') != null && element.value.length == 0) {
+			return lib.settings.messages.required;
 		}
-		
-		if (element.getAttribute('max') != null && element.value > parseFloat(element.getAttribute('max'))) {
-			return lib.settings.messages.maximum;
-		}
-		
 		return "";
 	}
-	
-	function validateMin(element) {
-		if (element.value == "") {
-			//Don't validate empty strings.  This is for "required" to determine.
-			return "";
-		}
-		
-		if (element.getAttribute('min') != null && element.value < parseFloat(element.getAttribute('min'))) {
-			return lib.settings.messages.minimum;
-		}
-		
-		return "";
-	}
-	
-	function validateNumeric(element) {
-		if (element.value == "") {
-			//Don't validate empty strings.  This is for "required" to determine.
-			return "";
-		}
-	
-		if (element.value != parseFloat(element.value)) {
-			return lib.settings.messages.numeric;
-		}
-	
-		return "";
-	}
-	
-	//The pattern attribute works with the following input types: text, search, url, tel, email, and password.
+
 	function validatePattern(element) {
-		if (element.value == "") {
-			//Don't validate empty strings.  This is for "required" to determine.
-			return "";
-		}
-		
-		if (element.getAttribute('pattern') != null) {
-			var regex = new RegExp(element.pattern);
-		
+		var nvPattern = element.getAttribute('pattern');
+		if (nvPattern != null && element.value != "") {
+			var regex = RegExp(nvPattern);
 			if (!regex.test(element.value)) {
 				return lib.settings.messages.pattern;
 			}
 		}
-	
 		return "";
 	}
 	
-	//The required attribute works with the following <input> types: text, search, url, telephone, email, password, date pickers, number, checkbox, radio, and file.
-	function validateRequired(element) {
-		if (element.getAttribute('required') != null && element.value.length <= 0) {
-			return lib.settings.messages.required;
+	function validateMax(element) {
+		var nvMax = element.getAttribute('max');
+		if (nvMax != null && element.value > parseFloat(nvMax) && element.value != "") {
+			return lib.settings.messages.maximum + " " + nvMax ;
 		}
-		
+		return "";
+	}
+
+	function validateMin(element) {
+		var nvMin = element.getAttribute('min');
+		if (nvMin != null && element.value < parseFloat(nvMin) && element.value != "") {
+			return lib.settings.messages.minimum + " " + nvMin;
+		}
 		return "";
 	}
 	
 	function validateStep(element) {
-		if (element.value == "") {
-			//Don't validate empty strings.  This is for "required" to determine.
-			return "";
+		var nvStep = element.getAttribute('step');
+		var nvMin = 0;
+		if (element.getAttribute('min') != null) {
+			nvMin = parseFloat(element.getAttribute('min'));
 		}
-		
-		if (element.getAttribute('step') != null && element.getAttribute('step') > 0 && element.value % parseFloat(element.getAttribute('step')) != 0) {
+		if (nvStep != null && nvStep > 0 && element.value % (parseFloat(nvStep) + min) != 0 && element.value != "") {
 			return lib.settings.messages.step;
 		}
-	
 		return "";
 	}
-	
+
 	/*
 	 * General Helper functions
 	 */
@@ -258,7 +289,7 @@
 		var span_element = document.createElement('span');
 		span_element.appendChild(document.createTextNode(message));
 		addClass(span_element, lib.settings.error_class);
-		
+
 		if (element.nextSibling == null || !hasClass(element.nextSibling, lib.settings.error_class)) {
 			if (element.nextSibling != null) {
 				element.parentNode.insertBefore(span_element, element.nextSibling);
@@ -268,19 +299,18 @@
 			}
 		}
 	}
-	
+
 	function removeMessage(element) {
 		//Abort if there isn't a next sibling
 		if (element.nextSibling == null) {
 			return;
 		}
-		
 		//Only remove the element if it has our validation error class
 		if (hasClass(element.nextSibling, lib.settings.error_class)) {
 			element.parentNode.removeChild(element.nextSibling);
 		}
 	}
-	
+
 	function addClass(element, class_name) {
 		element.className += ' '+class_name+' ';
 	}
@@ -293,18 +323,17 @@
 			return false;
 		}
 	}
-	
 	function removeClass(element, class_name) {
 		element.className = element.className.replace(new RegExp('(?:^|\s)'+class_name+'(?!\S)', ''));
 	}
-	
+
 	/*
 	 * Loop through and set up the validations on the form.
 	 */
 	
 	//Cache any pre-existing load event.
 	var old_load = window.onload || function() {};
-	
+
 	//Wait until the page has finished loading to attach to all page forms.
 	window.onload = function() {
 		//Attach to every form on the page.
@@ -312,64 +341,28 @@
 			var form = document.forms[i];
 			//Cache old callback.
 			var old_submit = form.onsubmit || function() {};
-			
+
 			//Set our new one.
 			form.onsubmit = function() {
 				var allowSubmit = true;
-				
 				//Test all elements on the form.
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
 					var message = "";
-					
-					//Then element-specific types
-					switch (element.getAttribute('type')) {
-						case "hidden":
-						case "submit":
-							break; //Don't validate these.
-						case "color":
-							message = validateColor(element);
-							break;
-						case "email":
-							message = validateEmail(element);
-							break;
-						case "month":
-							message = validateMonth(element);
-							break;
-						case "week":
-							message = validateWeek(element);
-							break;
-						case "number":
-						case "range":
-							message = validateNumber(element);
-							break;
-						case "url":
-							message = validateUrl(element);
-							break;
-						case "search":
-						case "tel": //No specified pattern, just semantic
-						case "text":
-						default: //Treat unrecognized types as text fields
-							message = validateText(element);
-					}
-					
+					message = validateElement(element);
 					removeMessage(element);
-					
 					if (message != "") {
 						allowSubmit = false;
 						createMessage(element, message);
 					}
-				}
-				
+				}	
 				if (allowSubmit) {
 					old_submit();
 				}
-				
-				//return preventSubmit;
 				return allowSubmit;
 			};
 		}
-		
+
 		//Run a pre-existing load event.
 		old_load();
 	};
