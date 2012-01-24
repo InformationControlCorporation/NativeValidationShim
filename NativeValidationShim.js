@@ -24,9 +24,9 @@
 		},
 		regex: { //Date formats specified in http://tools.ietf.org/html/rfc3339#section-5.6
 			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i, //A # followed by 3 or 6 hexadecimal characters
-			date: /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/, //e.g. 2009-12-31
-			datetime: /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?(Z|([+-][0-2][0-9]:[0-5][0-9]))$/, //e.g. a valid date, as defined above, plus a "T" plus a valid time, as defined below, and a timezone ("Z" or an offset)
-			datetimelocal: /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?$/, //datetime, but without the timezone specifier ("Z" or an offset)
+			date: /^[0-9]{4}-(0[1-9]|1[0-2])-(([0-2][0-9])|(3[0-1]))$/, //e.g. 2009-12-31
+			datetime: /^[0-9]{4}-(0[1-9]|1[0-2])-(([0-2][0-9])|(3[0-1]))T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?(Z|([+-][0-2][0-9]:[0-5][0-9]))$/, //e.g. a valid date, as defined above, plus a "T" plus a valid time, as defined below, and a timezone ("Z" or an offset)
+			datetimelocal: /^[0-9]{4}-(0[1-9]|1[0-2])-(([0-2][0-9])|(3[0-1]))T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?$/, //datetime, but without the timezone specifier ("Z" or an offset)
 			email: /^[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			emailMulti: /^(([a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*), )*[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			month: /^[0-9]{4}-(0[1-9]|1[0-2])$/, //A four-digit year and then the month number. e.g. 2010-04 for April 2010
@@ -72,32 +72,32 @@
 			},
 			date : {
 				regex : lib.settings.regex.date,
-				message: lib.settings.message.date,
+				message: lib.settings.messages.date,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			datetime : {
 				regex : lib.settings.regex.datetime,
-				message: lib.settings.message.datetime,
+				message: lib.settings.messages.datetime,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			datetimelocal : {
 				regex : lib.settings.regex.datetimelocal,
-				message: lib.settings.message.datetime
+				message: lib.settings.messages.datetime,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			month : {
 				regex : lib.settings.regex.month,
-				message: lib.settings.message.month,
+				message: lib.settings.messages.month,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			week : {
 				regex : lib.settings.regex.week,
-				message: lib.settings.message.week,
+				message: lib.settings.messages.week,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			time : {
 				regex : lib.settings.regex.time,
-				message: lib.settings.message.time,
+				message: lib.settings.messages.time,
 				validationAttributes : ['required', 'max', 'min', 'step']
 			},
 			number : {
