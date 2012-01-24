@@ -6,12 +6,20 @@
 		<script src="NativeValidationShim.js"></script>
 	</head>
 	<body>
-		<form action="#" method="post">
+		<form>
 			<table>
 				<tbody>
 					<tr>
 						<td>Required Test</td>
 						<td><input type="text" required /></td>
+					</tr>
+					<tr>
+						<td>Number Test</td>
+						<td><input type="number" /></td>
+					</tr>
+					<tr>
+						<td>Fake Test</td>
+						<td><input type="faker" pattern="[0-9]" /></td>
 					</tr>
 					<tr>
 						<td></td>
