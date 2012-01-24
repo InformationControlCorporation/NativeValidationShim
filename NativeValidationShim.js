@@ -1,18 +1,21 @@
 (function(root, undefined) {
 	//Set-up settings and other variables.
 	var lib = {};
-
 	lib.version = '0.0';
 	lib.settings = {
 		messages: {
-			maximum: "The number is cannot be above",
-			minimum: "The number is cannot be below",
+			color: "The value must be a valid hexadecimal color code",
+			email: "The value must be a valid email address",
+			emailMulti: "The value must be a list of one or more valid email addresses",
+			maximum: "The number cannot be higher than",
+			month: "Must be a valid month",
+			minimum: "The number cannot be lower than",
 			numeric: "The input must be a number",
 			pattern: "Invalid input",
 			required:  "This is a required field",
-			url: "This is not a valid URL",
 			step: "Must be divisible by the step size",
-			email: "This input must be an email"
+			url: "Must be a valid url",
+			week: "Must be a valid week"
 		},regex: {
 			numeric: /^([-]?[0-9]+(\.?[0-9]*)?([eE]?[\+-]?[0-9]*)?)$/,
 			date: null,
@@ -24,7 +27,7 @@
 			emailMulti: /^(([a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*), )*[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			month: /^\b0*([1-9]|1[0-2])\b$/,
 			url: /^\s*[a-z](?:[-a-z0-9\+\.])*:(?:\/\/(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:])*@)?(?:\[(?:(?:(?:[0-9a-f]{1,4}:){6}(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|::(?:[0-9a-f]{1,4}:){5}(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:[0-9a-f]{1,4}:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3})|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|v[0-9a-f]+[-a-z0-9\._~!\$&\'\(\)\*\+,;=:]+)\]|(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}|(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=@])*)(?::[0-9]*)?(?:\/(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@]))*)*|\/(?:(?:(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@]))+)(?:\/(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@]))*)*)?|(?:(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@]))+)(?:\/(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@]))*)*|(?!(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@])))(?:\?(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@])|[\uE000-\uF8FF\uF0000-\uFFFFD|\u100000-\u10FFFD\/\?])*)?(?:\#(?:(?:%[0-9a-f][0-9a-f]|[-a-z0-9\._~\uA0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\u10000-\u1FFFD\u20000-\u2FFFD\u30000-\u3FFFD\u40000-\u4FFFD\u50000-\u5FFFD\u60000-\u6FFFD\u70000-\u7FFFD\u80000-\u8FFFD\u90000-\u9FFFD\uA0000-\uAFFFD\uB0000-\uBFFFD\uC0000-\uCFFFD\uD0000-\uDFFFD\uE1000-\uEFFFD!\$&\'\(\)\*\+,;=:@])|[\/\?])*)?\s*$/i,
-			week: /^[0-9]{4}-W0*([1-9]|[1-4][0-9]|5[0-3])$/
+			week: /^[0-9]{4}-W0*([1-9]|[1-4][0-9]|5[0-3])$/ //A four-digit year and then the week number. e.g. 2010-W37 for the 37th week of 2010. Values are 1-52 (or 53 for some years)
 		},
 		error_class: 'validation_error'
 	};
@@ -111,8 +114,8 @@
 				validationAttributes : ['required']
 			},
 			color : {
-				regex: null,
-				message: '',
+				regex: lib.settings.regex.color,
+				message: lib.settings.messages.color,
 				validationAttributes : []
 			},
 			file : {
@@ -207,7 +210,7 @@
 		}
 		var nvPath = lib.supported.types[nvType];
 		var nvRegex = nvPath.regex;
-		if(nvRegex != null && element.value.length > 0) {
+		if(nvRegex != null && element.value.length != "") {
 			if(!nvRegex.test(element.value)){
 				message = nvPath.message;
 			}
@@ -225,14 +228,15 @@
 			}
 		}
 		return message;
-	 }
+	}
+	
+	
 	
 	/*
 	 * Create all of the helper validations, for validation logic shared between element types
 	 */
 	 
 	function validateRequired(element) {
-		console.info('in val required');
 		if (element.getAttribute('required') != null && element.value.length == 0) {
 			return lib.settings.messages.required;
 		}
@@ -240,8 +244,9 @@
 	}
 
 	function validatePattern(element) {
-		if (element.getAttribute('pattern') != null && element.value != "") {
-			var regex = RegExp(element.pattern);
+		var nvPattern = element.getAttribute('pattern');
+		if (nvPattern != null && element.value != "") {
+			var regex = RegExp(nvPattern);
 			if (!regex.test(element.value)) {
 				return lib.settings.messages.pattern;
 			}
@@ -258,18 +263,20 @@
 	}
 
 	function validateMin(element) {
-		if (element.getAttribute('min') != null && element.value < parseFloat(element.getAttribute('min'))) {
-			return lib.settings.messages.minimum;
+		var nvMin = element.getAttribute('min');
+		if (nvMin != null && element.value < parseFloat(nvMin) && element.value != "") {
+			return lib.settings.messages.minimum + " " + nvMin;
 		}
 		return "";
 	}
 	
 	function validateStep(element) {
-		var min = 0;
+		var nvStep = element.getAttribute('step');
+		var nvMin = 0;
 		if (element.getAttribute('min') != null) {
-			min = parseFloat(element.getAttribute('min'));
+			nvMin = parseFloat(element.getAttribute('min'));
 		}
-		if (element.getAttribute('step') != null && element.getAttribute('step') > 0 && element.value % (parseFloat(element.getAttribute('step')) + min) != 0 && element.value != "") {
+		if (nvStep != null && nvStep > 0 && element.value % (parseFloat(nvStep) + min) != 0 && element.value != "") {
 			return lib.settings.messages.step;
 		}
 		return "";
@@ -298,7 +305,6 @@
 		if (element.nextSibling == null) {
 			return;
 		}
-
 		//Only remove the element if it has our validation error class
 		if (hasClass(element.nextSibling, lib.settings.error_class)) {
 			element.parentNode.removeChild(element.nextSibling);
@@ -308,7 +314,7 @@
 	function addClass(element, class_name) {
 		element.className += ' '+class_name+' ';
 	}
-
+	
 	function hasClass(element, class_name) {
 		if ((" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" "+lib.settings.error_class+" ") > -1) {
 			return true;
@@ -317,7 +323,6 @@
 			return false;
 		}
 	}
-
 	function removeClass(element, class_name) {
 		element.className = element.className.replace(new RegExp('(?:^|\s)'+class_name+'(?!\S)', ''));
 	}
@@ -325,7 +330,7 @@
 	/*
 	 * Loop through and set up the validations on the form.
 	 */
-
+	
 	//Cache any pre-existing load event.
 	var old_load = window.onload || function() {};
 
@@ -340,7 +345,6 @@
 			//Set our new one.
 			form.onsubmit = function() {
 				var allowSubmit = true;
-
 				//Test all elements on the form.
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
@@ -351,13 +355,10 @@
 						allowSubmit = false;
 						createMessage(element, message);
 					}
-				}
-
+				}	
 				if (allowSubmit) {
 					old_submit();
 				}
-
-				//return preventSubmit;
 				return allowSubmit;
 			};
 		}

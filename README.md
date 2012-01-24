@@ -12,6 +12,9 @@ which hampers the ability for developers to use these new labor-saving
 features.  This library is meant to shim that deficiency, so the new standards
 can be used on old browsers.
 
+The goal of the library is to replicate native browser validation according to
+the HTML 5 specification, no more, no less.
+
 **Usage**
 
 Just include the NativeValiationShim.js file in your head and start using the
