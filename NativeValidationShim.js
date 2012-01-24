@@ -264,9 +264,10 @@
 	}
 	
 	function validateMax(element) {
-		var nvMax = element.getAttribute('max');
+		var nvMax = getComparableValue(element.getAttribute('max'), element.getAttribute('type'));
+		var nvVal = getComparableValue(element.value, element.getAttribute('type'));
 		
-		if (nvMax != null && element.value > parseFloat(nvMax) && element.value != "") {
+		if (nvMax != null && element.value != "" && nvVal > nvMax) {
 			return lib.settings.messages.maximum + " " + nvMax ;
 		}
 		
@@ -274,9 +275,10 @@
 	}
 
 	function validateMin(element) {
-		var nvMin = element.getAttribute('min');
+		var nvMin = getComparableValue(element.getAttribute('min'), element.getAttribute('type'));
+		var nvVal = getComparableValue(element.value, element.getAttribute('type'));
 		
-		if (nvMin != null && element.value < parseFloat(nvMin) && element.value != "") {
+		if (nvMin != null && element.value != "" && nvVal < nvMin) {
 			return lib.settings.messages.minimum + " " + nvMin;
 		}
 		
@@ -284,14 +286,39 @@
 	}
 	
 	function validateStep(element) {
-		var nvStep = element.getAttribute('step');
+		var nvStep = parseFloat(element.getAttribute('step'));
 		var nvMin = 0;
 		
-		if (element.getAttribute('min') != null) {
-			nvMin = parseFloat(element.getAttribute('min'));
+		//Normalize step on date elements into milliseconds (base representation of a date)
+		switch (element.getAttribute('type')) {
+			case "date":
+				nvStep = nvStep * 24 * 60 * 60 * 1000; //Unit of measure is a day
+				break;
+			case "datetime":
+			case "datetime-local":
+				nvStep = nvStep * 60 * 1000; //Unit of measure is a minute
+				break;
+			case "time":
+				nvStep = nvStep * 1000; //Unit of measure is seconds
+				break;
+			case "week":
+				nvStep = nvStep * 7 * 24 * 60 * 60 * 1000; //Unit of measure is a week
+				break;
+			case "month": 
+				//Months are variable in terms of seconds, keep abstracted at the number of months
+				break;
+			case "number":
+			case "range":
+			default:
+				//These are good as-is
+				break;
 		}
 		
-		if (nvStep != null && nvStep > 0 && element.value % (parseFloat(nvStep) + min) != 0 && element.value != "") {
+		if (element.getAttribute('min') != null) {
+			nvMin = getComparableValue(element.getAttribute('min'));
+		}
+		
+		if (nvStep != null && nvStep > 0 && element.value % (nvStep + nvMin) != 0 && element.value != "") {
 			return lib.settings.messages.step;
 		}
 		
@@ -314,6 +341,32 @@
 			else {
 				element.parentNode.appendChild(span_element);
 			}
+		}
+	}
+	
+	function getComparableValue(val, type) {
+		switch (type) {
+			case "month": // e.g. 2009-12 for December, 2009
+				//Months are variable in terms of seconds, keep abstracted at the number of months since the Unix epoch
+				var dateVal = new Date(val);
+				return (dateVal.getUTCYear() - 1970) * 12 + dateVal.getUTCMonth();
+				break;
+			case "date": // e.g. 2009-12-31 for December 31, 2009
+			case "datetime": // e.g. 2009-12-31 18:48 for December 31, 2009 2:48pm
+			case "datetime-local": // e.g. 2009-12-31 18:48 for December 31, 2009 2:48pm
+			case "week": // e.g. 2009-W52 for the 52nd week (1-based) of 2009
+				var dateVal = new Date(val);
+				return dateVal.getMilliseconds();
+				break;
+			case "time": // e.g. 18:48:23 for 23 seconds after 2:48pm 
+				var dateVal = new Date('January 1, 2001 ' + val); //dummy up the date, since the time is all that matters
+				return dateVal.getMilliseconds();
+				break;
+			case "number":
+			case "range":
+			default:
+				return parseFloat(val);
+				break;
 		}
 	}
 
