@@ -181,7 +181,7 @@
 				message: "",
 				validationFunction : null
 			},
-			placeholder : {
+			maxlength : {
 				message: "",
 				validationFunction : null
 			}
