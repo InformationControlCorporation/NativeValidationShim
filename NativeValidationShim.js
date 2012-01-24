@@ -1,7 +1,9 @@
 (function(root, undefined) {
 	//Set-up settings and other variables.
 	var lib = {};
+	
 	lib.version = '0.0';
+	
 	lib.settings = {
 		messages: {
 			color: "The value must be a valid hexadecimal color code",
@@ -16,7 +18,8 @@
 			step: "Must be divisible by the step size",
 			url: "Must be a valid url",
 			week: "Must be a valid week"
-		},regex: {
+		},
+		regex: {
 			numeric: /^([-]?[0-9]+(\.?[0-9]*)?([eE]?[\+-]?[0-9]*)?)$/,
 			date: null,
 			datetime: null,
@@ -31,6 +34,7 @@
 		},
 		error_class: 'validation_error'
 	};
+	
 	lib.supported = {
 		types : {
 			text : {
@@ -191,47 +195,49 @@
 		}
 	}
 
-	/*
-	 * Validates every element in a form
-	 */
-	 
-	 function validateElement(element) {
+	// Validates every element in a form
+	function validateElement(element) {
 		var message = "";
 		var nvTag = element.tagName.toLowerCase();
 		var nvType = element.getAttribute("type").replace(/-/, "");
-		if(nvTag != 'input') {
-			if(lib.supported.types[nvTag]){
+		if (nvTag != 'input') {
+			if (lib.supported.types[nvTag]){
 				nvType = nvTag;
-			} else {
+			}
+			else {
 				return message;
 			}
-		} else if(!lib.supported.types[nvType]) {
+		}
+		else if (!lib.supported.types[nvType]) {
 			nvType = "text";
 		}
+		
 		var nvPath = lib.supported.types[nvType];
 		var nvRegex = nvPath.regex;
-		if(nvRegex != null && element.value.length != "") {
-			if(!nvRegex.test(element.value)){
+		
+		if (nvRegex != null && element.value.length != "") {
+			if (!nvRegex.test(element.value)){
 				message = nvPath.message;
 			}
 		}
-		if(message == "") {
+		
+		if (message == "") {
 			var nvAttr = nvPath.validationAttributes;
-			if(nvAttr.length > 0) {
+			
+			if (nvAttr.length > 0) {
 				for(i=0; i < nvAttr.length; i++) {
-					if(message == "") {
-						if(element.getAttribute(nvAttr[i]) != null && lib.supported.attributes[nvAttr[i]].validationFunction != null) {
+					if (message == "") {
+						if (element.getAttribute(nvAttr[i]) != null && lib.supported.attributes[nvAttr[i]].validationFunction != null) {
 							message = lib.supported.attributes[nvAttr[i]].validationFunction(element);
 						}
 					}
 				}
 			}
 		}
+		
 		return message;
 	}
-	
-	
-	
+
 	/*
 	 * Create all of the helper validations, for validation logic shared between element types
 	 */
@@ -240,51 +246,62 @@
 		if (element.getAttribute('required') != null && element.value.length == 0) {
 			return lib.settings.messages.required;
 		}
+		
 		return "";
 	}
 
 	function validatePattern(element) {
 		var nvPattern = element.getAttribute('pattern');
+		
 		if (nvPattern != null && element.value != "") {
 			var regex = RegExp(nvPattern);
 			if (!regex.test(element.value)) {
 				return lib.settings.messages.pattern;
 			}
 		}
+		
 		return "";
 	}
 	
 	function validateMax(element) {
 		var nvMax = element.getAttribute('max');
+		
 		if (nvMax != null && element.value > parseFloat(nvMax) && element.value != "") {
 			return lib.settings.messages.maximum + " " + nvMax ;
 		}
+		
 		return "";
 	}
 
 	function validateMin(element) {
 		var nvMin = element.getAttribute('min');
+		
 		if (nvMin != null && element.value < parseFloat(nvMin) && element.value != "") {
 			return lib.settings.messages.minimum + " " + nvMin;
 		}
+		
 		return "";
 	}
 	
 	function validateStep(element) {
 		var nvStep = element.getAttribute('step');
 		var nvMin = 0;
+		
 		if (element.getAttribute('min') != null) {
 			nvMin = parseFloat(element.getAttribute('min'));
 		}
+		
 		if (nvStep != null && nvStep > 0 && element.value % (parseFloat(nvStep) + min) != 0 && element.value != "") {
 			return lib.settings.messages.step;
 		}
+		
 		return "";
 	}
 
 	/*
 	 * General Helper functions
 	 */
+	 
 	function createMessage(element, message) {
 		var span_element = document.createElement('span');
 		span_element.appendChild(document.createTextNode(message));
@@ -323,6 +340,7 @@
 			return false;
 		}
 	}
+	
 	function removeClass(element, class_name) {
 		element.className = element.className.replace(new RegExp('(?:^|\s)'+class_name+'(?!\S)', ''));
 	}
@@ -330,7 +348,7 @@
 	/*
 	 * Loop through and set up the validations on the form.
 	 */
-	
+
 	//Cache any pre-existing load event.
 	var old_load = window.onload || function() {};
 
@@ -339,12 +357,14 @@
 		//Attach to every form on the page.
 		for (var i = 0; i < document.forms.length; i++) {
 			var form = document.forms[i];
+			
 			//Cache old callback.
 			var old_submit = form.onsubmit || function() {};
 
 			//Set our new one.
 			form.onsubmit = function() {
 				var allowSubmit = true;
+				
 				//Test all elements on the form.
 				for (var j = 0; j < form.elements.length; j++) {
 					var element = form.elements[j];
@@ -355,7 +375,8 @@
 						allowSubmit = false;
 						createMessage(element, message);
 					}
-				}	
+				}
+				
 				if (allowSubmit) {
 					old_submit();
 				}
