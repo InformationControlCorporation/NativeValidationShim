@@ -26,6 +26,11 @@ show a likely method of styling the errors.
 
 **Change Log**
 
+*v0.9*
+
+Support for all input elements defined in HTML 5 and support for all attributes
+aside from novalidate and formnovalidate.
+
 *v0.0*
 
 Hello World
