@@ -1,0 +1,5 @@
+HTML 5 Native Validation Shim
+Copyright 2012 Information Control Corporation
+
+This product contains software developed by
+Information Control Corporation (http://www.InformationControlCorporation.com/)
