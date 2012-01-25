@@ -17,7 +17,7 @@
 	//Set-up settings and other variables.
 	var lib = {};
 	
-	lib.version = '0.0';
+	lib.version = '0.9';
 	
 	lib.settings = {
 		messages: {
