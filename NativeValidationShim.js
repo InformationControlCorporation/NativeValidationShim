@@ -35,7 +35,8 @@
 			step: "The value is not a valid step",
 			time: "Invalid time format",
 			url: "Must be a valid url",
-			week: "Must be a valid week"
+			week: "Must be a valid week",
+            maxlength: "Value has too many characters"
 		},
 		regex: { //Date formats specified in http://tools.ietf.org/html/rfc3339#section-5.6
 			color: /^#([a-f0-9]{3}|[a-f0-9]{6})$/i, //A # followed by 3 or 6 hexadecimal characters
@@ -43,7 +44,7 @@
 			datetime: /^[0-9]{4}-(0[1-9]|1[0-2])-(([0-2][0-9])|(3[0-1]))T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?(Z|([+-][0-2][0-9]:[0-5][0-9]))$/, //e.g. a valid date, as defined above, plus a "T" plus a valid time, as defined below, and a timezone ("Z" or an offset)
 			datetimelocal: /^[0-9]{4}-(0[1-9]|1[0-2])-(([0-2][0-9])|(3[0-1]))T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?$/, //datetime, but without the timezone specifier ("Z" or an offset)
 			email: /^[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-			emailMulti: /^(([a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*), )*[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+			emailMulti: /^(([a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*),[\s]*)*[a-zA-Z0-9.!#$%&'*+/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 			month: /^[0-9]{4}-(0[1-9]|1[0-2])$/, //A four-digit year and then the month number. e.g. 2010-04 for April 2010
 			numeric: /^([-]?[0-9]+(\.?[0-9]*)?([eE]?[\+-]?[0-9]*)?)$/,
 			time: /^[0-2][0-9]:[0-5][0-9]:[0-5][0-9](\.[0-9])?$/,  //HH:MM:SS followed by an optional second fraction
@@ -58,127 +59,152 @@
 			text : {
 				regex : null,
 				message: '',
-				validationAttributes : ['required', 'pattern']
+				validationAttributes : ['required', 'pattern'],
+                defer : null
 			},
 			search : {
 				regex : null,
 				message: '',
-				validationAttributes : ['required', 'pattern']
+				validationAttributes : ['required', 'pattern'],
+                defer : null
 			},
 			url : {
 				regex : lib.settings.regex.url,
 				message: lib.settings.messages.url,
-				validationAttributes : ['required', 'pattern']
+				validationAttributes : ['required', 'pattern'],
+                defer : null
 			},
 			tel : {
 				regex : null,
 				message: '',
-				validationAttributes : ['required', 'pattern']
+				validationAttributes : ['required', 'pattern'],
+                defer : null
 			},
 			email : {
 				regex : lib.settings.regex.email,
 				message: lib.settings.messages.email,
-				validationAttributes : ['required', 'pattern', 'multiple']
+				validationAttributes : ['required', 'multiple', 'pattern'],
+                defer : 'multiple'
 			},
 			password : {
 				regex : null,
 				message: '',
-				validationAttributes : ['required', 'pattern']
+				validationAttributes : ['required', 'pattern'],
+                defer : null
 			},
 			date : {
 				regex : lib.settings.regex.date,
 				message: lib.settings.messages.date,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			datetime : {
 				regex : lib.settings.regex.datetime,
 				message: lib.settings.messages.datetime,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			datetimelocal : {
 				regex : lib.settings.regex.datetimelocal,
 				message: lib.settings.messages.datetime,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			month : {
 				regex : lib.settings.regex.month,
 				message: lib.settings.messages.month,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			week : {
 				regex : lib.settings.regex.week,
 				message: lib.settings.messages.week,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			time : {
 				regex : lib.settings.regex.time,
 				message: lib.settings.messages.time,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			number : {
 				regex: lib.settings.regex.numeric,
 				message: lib.settings.messages.numeric,
-				validationAttributes : ['required', 'max', 'min', 'step']
+				validationAttributes : ['required', 'max', 'min', 'step'],
+                defer : null
 			},
 			range : {
 				regex: lib.settings.regex.numeric,
 				message: lib.settings.messages.numeric,
-				validationAttributes : ['max', 'min', 'step']
+				validationAttributes : ['max', 'min', 'step'],
+                defer : null
 			},
 			checkbox : {
 				regex: null,
 				message: '',
-				validationAttributes : ['required']
+				validationAttributes : ['required'],
+                defer : null
 			},
 			radio : {
 				regex: null,
 				message: '',
-				validationAttributes : ['required']
+				validationAttributes : ['required'],
+                defer : null
 			},
 			color : {
 				regex: lib.settings.regex.color,
 				message: lib.settings.messages.color,
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			file : {
 				regex: null,
 				message: '',
-				validationAttributes : ['required']
+				validationAttributes : ['required'],
+                defer : null
 			},
 			hidden : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			submit : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			image : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			button : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			reset : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			select : {
 				regex: null,
 				message: '',
-				validationAttributes : []
+				validationAttributes : [],
+                defer : null
 			},
 			textarea : {
 				regex: null,
 				message: '',
-				validationAttributes : ['required', 'maxlength']
+				validationAttributes : ['required', 'maxlength'],
+                defer : validateMaxlength
 			}
 		},
 		attributes : {
@@ -204,11 +230,11 @@
 			},
 			multiple : {
 				message: "",
-				validationFunction : null
+				validationFunction : validateMultiple
 			},
 			maxlength : {
 				message: "",
-				validationFunction : null
+				validationFunction : validateMaxlength
 			}
 		}
 	}
@@ -217,7 +243,7 @@
 	function validateElement(element) {
 		var message = "";
 		var nvTag = element.tagName.toLowerCase();
-		var nvType = element.getAttribute("type").replace(/-/, "");
+		var nvType = element.getAttribute("type").replace(/-/, "").toLowerCase();
 		if (nvTag != 'input') {
 			if (lib.supported.types[nvTag]){
 				nvType = nvTag;
@@ -232,36 +258,71 @@
 		
 		var nvPath = lib.supported.types[nvType];
 		var nvRegex = nvPath.regex;
-		
-		if (nvRegex != null && element.value.length != "") {
-			if (!nvRegex.test(element.value)){
-				message = nvPath.message;
+        var nvDefer = nvPath.defer;
+        var nvDeferedHit = false;
+		if (nvDefer == null) {
+           if (nvRegex != null && element.value != "") {
+                if(!nvRegex.test(element.value)) {
+                    message = nvPath.message;
+                }
 			}
-		}
-		
+        }
 		if (message == "") {
 			var nvAttr = nvPath.validationAttributes;
-			
 			if (nvAttr.length > 0) {
 				for(i=0; i < nvAttr.length; i++) {
 					if (message == "") {
-						if (element.getAttribute(nvAttr[i]) != null && lib.supported.attributes[nvAttr[i]].validationFunction != null) {
+                        if (element.getAttribute(nvAttr[i]) != null && lib.supported.attributes[nvAttr[i]].validationFunction != null) {
+                            if(nvAttr[i] == nvDefer) {
+                                nvDeferedHit = true;
+                            }
 							message = lib.supported.attributes[nvAttr[i]].validationFunction(element);
 						}
 					}
 				}
 			}
 		}
-		
+		if (nvDefer != null && !nvDeferedHit && message == "") {
+            if (nvRegex != null && element.value != "") {
+                if(!nvRegex.test(element.value)) {
+                    message = nvPath.message;
+                }
+			}
+        }
 		return message;
 	}
 
 	/*
 	 * Create all of the helper validations, for validation logic shared between element types
 	 */
-	 
-	function validateRequired(element) {
-		if (element.getAttribute('required') != null && element.value.length == 0) {
+     
+	function validateMaxlength(element) {
+        var nvMaxLen = parseFloat(element.getAttribute('maxlength'));
+        if(element.value.length > nvMaxLen && element.value != null) {
+            return lib.settings.messages.maxlength;
+        }
+    }
+    
+    function validateMultiple(element) {
+        var regex;
+        var msg;
+        if(element.getAttribute('type').toLowerCase() == 'email') {
+            regex = lib.settings.regex.emailMulti;
+            msg = lib.settings.messages.emailMulti;
+        }
+        console.info(regex);
+        console.info(msg);
+        if (element.getAttribute('multiple') != null && element.value != "" ) {
+			if(!regex.test(element.value)) {
+                console.info(msg);
+                return msg;
+            }
+		}
+		return "";
+	}
+      
+	function validateRequired(element) {;
+        if (element.getAttribute('required') != null && element.value.length == 0) {
 			return lib.settings.messages.required;
 		}
 		
